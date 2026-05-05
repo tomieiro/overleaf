@@ -163,13 +163,13 @@ function registerExternalAuthAdmin(authMethod) {
       throw err
     }
 
-    AuthenticationController.setRedirectInSession(req, '/launchpad')
+    AuthenticationController.setRedirectInSession(req, '/project')
     logger.debug(
       { email, userId: user._id, authMethod },
       'created first admin account'
     )
 
-    res.json({ redir: '/launchpad', email })
+    res.json({ redir: '/project', email })
   })
 }
 
@@ -240,7 +240,7 @@ async function registerAdmin(req, res) {
   }
 
   logger.debug({ email, userId: user._id }, 'created first admin account')
-  res.json({ redir: '/launchpad' })
+  res.json({ redir: '/project' })
 }
 
 const LaunchpadController = {
