@@ -4,10 +4,8 @@ import { Tag } from '../../../../../../app/src/Features/Tags/types'
 import useAsync from '../../../../shared/hooks/use-async'
 import { useProjectListContext } from '../../context/project-list-context'
 import { useRefWithAutoFocus } from '../../../../shared/hooks/use-ref-with-auto-focus'
-import useSelectColor from '../../hooks/use-select-color'
-import { createTag } from '../../util/api'
+import { createFolder } from '../../util/api'
 import { MAX_TAG_LENGTH } from '../../util/tag'
-import { ColorPicker } from '../color-picker/color-picker'
 import { debugConsole } from '@/utils/debugging'
 import {
   OLModal,
@@ -28,7 +26,6 @@ type CreateTagModalProps = {
   show: boolean
   onCreate: (tag: Tag) => void
   onClose: () => void
-  disableCustomColor?: boolean
 }
 
 export default function CreateTagModal({
@@ -36,10 +33,8 @@ export default function CreateTagModal({
   show,
   onCreate,
   onClose,
-  disableCustomColor,
 }: CreateTagModalProps) {
   const { tags } = useProjectListContext()
-  const { selectedColor } = useSelectColor()
   const { t } = useTranslation()
   const { isLoading, isError, runAsync, status } = useAsync<Tag>()
   const { autoFocusedRef } = useRefWithAutoFocus<HTMLInputElement>()
@@ -49,11 +44,11 @@ export default function CreateTagModal({
 
   const runCreateTag = useCallback(() => {
     if (tagName) {
-      runAsync(createTag(tagName, selectedColor))
+      runAsync(createFolder(tagName))
         .then(tag => onCreate(tag))
         .catch(debugConsole.error)
     }
-  }, [runAsync, tagName, selectedColor, onCreate])
+  }, [runAsync, tagName, onCreate])
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -96,12 +91,6 @@ export default function CreateTagModal({
               required
               type="text"
             />
-          </OLFormGroup>
-          <OLFormGroup aria-hidden="true">
-            <OLFormLabel>{t('tag_color')}</OLFormLabel>:{' '}
-            <div>
-              <ColorPicker disableCustomColor={disableCustomColor} />
-            </div>
           </OLFormGroup>
         </OLForm>
         {validationError && (

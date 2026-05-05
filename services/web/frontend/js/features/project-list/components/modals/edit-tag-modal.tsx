@@ -4,10 +4,8 @@ import { Tag } from '../../../../../../app/src/Features/Tags/types'
 import useAsync from '../../../../shared/hooks/use-async'
 import { useProjectListContext } from '../../context/project-list-context'
 import { useRefWithAutoFocus } from '../../../../shared/hooks/use-ref-with-auto-focus'
-import useSelectColor from '../../hooks/use-select-color'
-import { editTag } from '../../util/api'
-import { getTagColor, MAX_TAG_LENGTH } from '../../util/tag'
-import { ColorPicker } from '../color-picker/color-picker'
+import { editFolder } from '../../util/api'
+import { MAX_TAG_LENGTH } from '../../util/tag'
 import { debugConsole } from '@/utils/debugging'
 import {
   OLModal,
@@ -26,7 +24,7 @@ import OLFormControl from '@/shared/components/ol/ol-form-control'
 type EditTagModalProps = {
   id: string
   tag?: Tag
-  onEdit: (tagId: string, newTagName: string, newTagColor?: string) => void
+  onEdit: (tagId: string, newTagName: string, _newTagColor?: string) => void
   onClose: () => void
 }
 
@@ -39,8 +37,6 @@ export function EditTagModal({ id, tag, onEdit, onClose }: EditTagModalProps) {
   const [newTagName, setNewTagName] = useState<string | undefined>()
   const [validationError, setValidationError] = useState<string>()
 
-  const { selectedColor } = useSelectColor(getTagColor(tag))
-
   useEffect(() => {
     setNewTagName(tag?.name)
   }, [tag])
@@ -48,13 +44,12 @@ export function EditTagModal({ id, tag, onEdit, onClose }: EditTagModalProps) {
   const runEditTag = useCallback(
     (tagId: string) => {
       if (newTagName) {
-        const color = selectedColor
-        runAsync(editTag(tagId, newTagName, color))
-          .then(() => onEdit(tagId, newTagName, color))
+        runAsync(editFolder(tagId, newTagName))
+          .then(() => onEdit(tagId, newTagName))
           .catch(debugConsole.error)
       }
     },
-    [runAsync, newTagName, selectedColor, onEdit]
+    [runAsync, newTagName, onEdit]
   )
 
   const handleSubmit = useCallback(
@@ -107,12 +102,6 @@ export function EditTagModal({ id, tag, onEdit, onClose }: EditTagModalProps) {
               onChange={e => setNewTagName(e.target.value)}
             />
           </OLFormGroup>
-          <OLFormGroup aria-hidden="true">
-            <OLFormLabel>{t('tag_color')}</OLFormLabel>:{' '}
-            <div>
-              <ColorPicker />
-            </div>
-          </OLFormGroup>
         </OLForm>
         {validationError && (
           <Notification content={validationError} type="error" />
@@ -136,7 +125,7 @@ export function EditTagModal({ id, tag, onEdit, onClose }: EditTagModalProps) {
             isLoading ||
             status === 'pending' ||
             !newTagName?.length ||
-            (newTagName === tag?.name && selectedColor === getTagColor(tag)) ||
+            newTagName === tag?.name ||
             !!validationError
           }
           isLoading={isLoading}

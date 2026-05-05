@@ -4,6 +4,7 @@ import Features from './infrastructure/Features.mjs'
 import ProjectController from './Features/Project/ProjectController.mjs'
 import ProjectApiController from './Features/Project/ProjectApiController.mjs'
 import ProjectListController from './Features/Project/ProjectListController.mjs'
+import ProjectFoldersController from './Features/Project/ProjectFoldersController.mjs'
 import SpellingController from './Features/Spelling/SpellingController.mjs'
 import EditorRouter from './Features/Editor/EditorRouter.mjs'
 import Settings from '@overleaf/settings'
@@ -106,11 +107,19 @@ const rateLimiters = {
     points: 30,
     duration: 60,
   }),
+  createFolder: new RateLimiter('create-folder', {
+    points: 30,
+    duration: 60,
+  }),
   deleteEmail: new RateLimiter('delete-email', {
     points: 10,
     duration: 60,
   }),
   deleteTag: new RateLimiter('delete-tag', {
+    points: 30,
+    duration: 60,
+  }),
+  deleteFolder: new RateLimiter('delete-folder', {
     points: 30,
     duration: 60,
   }),
@@ -170,6 +179,10 @@ const rateLimiters = {
     duration: 60,
   }),
   renameTag: new RateLimiter('rename-tag', {
+    points: 30,
+    duration: 60,
+  }),
+  renameFolder: new RateLimiter('rename-folder', {
     points: 30,
     duration: 60,
   }),
@@ -835,6 +848,34 @@ async function initialize(webRouter, privateApiRouter, publicApiRouter) {
     AuthenticationController.requireLogin(),
     RateLimiterMiddleware.rateLimit(rateLimiters.createTag),
     TagsController.createTag
+  )
+  webRouter.get(
+    '/project-folders',
+    AuthenticationController.requireLogin(),
+    ProjectFoldersController.listFolders
+  )
+  webRouter.post(
+    '/project-folders',
+    AuthenticationController.requireLogin(),
+    RateLimiterMiddleware.rateLimit(rateLimiters.createFolder),
+    ProjectFoldersController.createFolder
+  )
+  webRouter.post(
+    '/project-folders/:folderId',
+    AuthenticationController.requireLogin(),
+    RateLimiterMiddleware.rateLimit(rateLimiters.renameFolder),
+    ProjectFoldersController.updateFolder
+  )
+  webRouter.delete(
+    '/project-folders/:folderId',
+    AuthenticationController.requireLogin(),
+    RateLimiterMiddleware.rateLimit(rateLimiters.deleteFolder),
+    ProjectFoldersController.deleteFolder
+  )
+  webRouter.post(
+    '/projects/:projectId/folder',
+    AuthenticationController.requireLogin(),
+    ProjectFoldersController.updateProjectFolder
   )
   webRouter.post(
     '/tag/:tagId/rename',

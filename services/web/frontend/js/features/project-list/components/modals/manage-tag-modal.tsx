@@ -2,11 +2,8 @@ import { FormEvent, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import useAsync from '../../../../shared/hooks/use-async'
 import { useRefWithAutoFocus } from '../../../../shared/hooks/use-ref-with-auto-focus'
-import useSelectColor from '../../hooks/use-select-color'
-import { deleteTag, editTag } from '../../util/api'
+import { deleteFolder, editFolder } from '../../util/api'
 import { Tag } from '../../../../../../app/src/Features/Tags/types'
-import { getTagColor } from '../../util/tag'
-import { ColorPicker } from '../color-picker/color-picker'
 import { debugConsole } from '@/utils/debugging'
 import {
   OLModal,
@@ -50,11 +47,10 @@ export function ManageTagModal({
     runAsync: runEditAsync,
   } = useAsync()
   const [newTagName, setNewTagName] = useState<string | undefined>(tag?.name)
-  const { selectedColor } = useSelectColor(tag?.color)
 
   const runDeleteTag = useCallback(
     (tagId: string) => {
-      runDeleteAsync(deleteTag(tagId))
+      runDeleteAsync(deleteFolder(tagId))
         .then(() => {
           onDelete(tagId)
         })
@@ -66,12 +62,12 @@ export function ManageTagModal({
   const runUpdateTag = useCallback(
     (tagId: string) => {
       if (newTagName) {
-        runEditAsync(editTag(tagId, newTagName, selectedColor))
-          .then(() => onEdit(tagId, newTagName, selectedColor))
+        runEditAsync(editFolder(tagId, newTagName))
+          .then(() => onEdit(tagId, newTagName))
           .catch(debugConsole.error)
       }
     },
-    [runEditAsync, newTagName, selectedColor, onEdit]
+    [runEditAsync, newTagName, onEdit]
   )
 
   const handleSubmit = useCallback(
@@ -108,10 +104,6 @@ export function ManageTagModal({
               onChange={e => setNewTagName(e.target.value)}
             />
           </OLFormGroup>
-          <OLFormGroup aria-hidden="true">
-            <OLFormLabel>{t('tag_color')}</OLFormLabel>:<br />
-            <ColorPicker disableCustomColor />
-          </OLFormGroup>
         </OLForm>
         {(isDeleteError || isRenameError) && (
           <Notification
@@ -146,7 +138,7 @@ export function ManageTagModal({
             isUpdateLoading ||
             isDeleteLoading ||
             !newTagName?.length ||
-            (newTagName === tag?.name && selectedColor === getTagColor(tag))
+            newTagName === tag?.name
           )}
           isLoading={isUpdateLoading}
           loadingLabel={t('saving')}

@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next'
 import MaterialIcon from '../../../../../../shared/components/material-icon'
 import { useProjectListContext } from '../../../../context/project-list-context'
 import useTag from '../../../../hooks/use-tag'
-import { addProjectsToTag, removeProjectsFromTag } from '../../../../util/api'
+import {
+  addProjectsToFolder,
+  removeProjectsFromFolder,
+} from '../../../../util/api'
 import { getTagColor } from '../../../../util/tag'
 import {
   Dropdown,
@@ -45,7 +48,7 @@ function TagsDropdown() {
           projectIds.push(selectedProject.id)
         }
       }
-      addProjectsToTag(tagId, projectIds)
+      addProjectsToFolder(tagId, projectIds)
     },
     [tags, selectedProjects, addProjectToTagInView]
   )
@@ -56,10 +59,7 @@ function TagsDropdown() {
       for (const selectedProject of selectedProjects) {
         removeProjectFromTagInView(tagId, selectedProject.id)
       }
-      removeProjectsFromTag(
-        tagId,
-        selectedProjects.map(project => project.id)
-      )
+      removeProjectsFromFolder(selectedProjects.map(project => project.id))
     },
     [selectedProjects, removeProjectFromTagInView]
   )
@@ -90,7 +90,7 @@ function TagsDropdown() {
           flip={false}
           data-testid="project-tools-more-dropdown-menu"
         >
-          <DropdownHeader>{t('add_to_tag')}</DropdownHeader>
+          <DropdownHeader>{'Move to folder'}</DropdownHeader>
           {sortBy(tags, tag => tag.name?.toLowerCase()).map(tag => (
             <li role="none" key={tag._id}>
               <DropdownItem
@@ -132,7 +132,7 @@ function TagsDropdown() {
               as="button"
               tabIndex={-1}
             >
-              {t('create_new_tag')}
+              {'Create new folder'}
             </DropdownItem>
           </li>
         </DropdownMenu>

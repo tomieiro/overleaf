@@ -6,7 +6,7 @@ import { EditTagModal } from '../components/modals/edit-tag-modal'
 import DeleteTagModal from '../components/modals/delete-tag-modal'
 import { ManageTagModal } from '../components/modals/manage-tag-modal'
 import { find } from 'lodash'
-import { addProjectsToTag } from '../util/api'
+import { addProjectsToFolder } from '../util/api'
 
 function useTag() {
   const {
@@ -41,7 +41,7 @@ function useTag() {
       for (const selectedProject of selectedProjects) {
         addProjectToTagInView(tag._id, selectedProject.id)
       }
-      addProjectsToTag(
+      addProjectsToFolder(
         tag._id,
         selectedProjects.map(project => project.id)
       )
@@ -116,10 +116,8 @@ function useTag() {
 
   function CreateModal({
     id,
-    disableCustomColor,
   }: {
     id: string
-    disableCustomColor?: boolean
   }) {
     return (
       <CreateTagModal
@@ -127,7 +125,6 @@ function useTag() {
         show={creatingTag}
         onCreate={onCreate}
         onClose={() => setCreatingTag(false)}
-        disableCustomColor={disableCustomColor}
       />
     )
   }

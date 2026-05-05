@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Tag as TagType } from '../../../../../../../app/src/Features/Tags/types'
 import { useProjectListContext } from '../../../context/project-list-context'
-import { removeProjectFromTag } from '../../../util/api'
+import { removeProjectFromFolder } from '../../../util/api'
 import { getTagColor } from '../../../util/tag'
 import Tag from '@/shared/components/tag'
 
@@ -37,7 +37,7 @@ function InlineTag({ tag, projectId }: InlineTagProps) {
   const handleRemoveTag = useCallback(
     async (tagId: string, projectId: string) => {
       removeProjectFromTagInView(tagId, projectId)
-      await removeProjectFromTag(tagId, projectId)
+      await removeProjectFromFolder(projectId)
     },
     [removeProjectFromTagInView]
   )

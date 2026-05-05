@@ -40,12 +40,12 @@ export default function TagsList() {
         aria-hidden="true"
         data-testid="organize-projects"
       >
-        {t('organize_tags')}
+        {'Organize folders'}
       </li>
       <li className="tag">
         <button type="button" className="tag-name" onClick={openCreateTagModal}>
           <Plus weight="bold" />
-          <span className="name">{t('new_tag')}</span>
+          <span className="name">{'New folder'}</span>
         </button>
       </li>
       {sortBy(tags, tag => tag.name?.toLowerCase()).map(tag => {
@@ -70,7 +70,7 @@ export default function TagsList() {
                 <TagSimple weight="fill" className="tag-list-icon" />
               </span>
               <span className="name">
-                {tag.name}{' '}
+              {tag.name}{' '}
                 <span className="subdued">
                   ({projectsPerTag[tag._id].length})
                 </span>
@@ -86,20 +86,20 @@ export default function TagsList() {
                 <DotsThreeVertical weight="bold" />
               </DropdownToggle>
               <DropdownMenu className="dropdown-menu-sm-width">
-                <DropdownItem
-                  as="li"
-                  className="tag-action"
-                  onClick={e => handleEditTag(e, tag._id)}
-                >
-                  {t('edit')}
-                </DropdownItem>
-                <DropdownItem
-                  as="li"
-                  className="tag-action"
-                  onClick={e => handleDeleteTag(e, tag._id)}
-                >
-                  {t('delete')}
-                </DropdownItem>
+              <DropdownItem
+                as="li"
+                className="tag-action"
+                onClick={e => handleEditTag(e, tag._id)}
+              >
+                  {'Rename folder'}
+              </DropdownItem>
+              <DropdownItem
+                as="li"
+                className="tag-action"
+                onClick={e => handleDeleteTag(e, tag._id)}
+              >
+                  {'Delete folder'}
+              </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </li>
@@ -117,7 +117,7 @@ export default function TagsList() {
             onClick={() => selectTag(UNCATEGORIZED_KEY)}
           >
             <span className="name fst-italic">
-              {t('uncategorized')}{' '}
+              {'Unfiled Projects'}{' '}
               <span className="subdued">({untaggedProjectsCount})</span>
             </span>
           </button>

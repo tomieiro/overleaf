@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Tag } from '../../../../../../app/src/Features/Tags/types'
 import useAsync from '../../../../shared/hooks/use-async'
-import { deleteTag } from '../../util/api'
+import { deleteFolder } from '../../util/api'
 import { debugConsole } from '@/utils/debugging'
 import {
   OLModal,
@@ -32,7 +32,7 @@ export default function DeleteTagModal({
 
   const runDeleteTag = useCallback(
     (tagId: string) => {
-      runAsync(deleteTag(tagId))
+      runAsync(deleteFolder(tagId))
         .then(() => {
           onDelete(tagId)
         })
