@@ -46,9 +46,10 @@ If you are upgrading from a previous version of Overleaf, please see the [Releas
 
 ## Overleaf Docker Image
 
-This repo contains two dockerfiles, [`Dockerfile-base`](server-ce/Dockerfile-base), which builds the
-`sharelatex/sharelatex-base` image, and [`Dockerfile`](server-ce/Dockerfile) which builds the
-`sharelatex/sharelatex` (or "community") image.
+This repo contains a top-level [`Dockerfile`](Dockerfile) for building the
+`sharelatex/sharelatex` (or "community") image from source, plus
+[`Dockerfile-base`](server-ce/Dockerfile-base) for the
+`sharelatex/sharelatex-base` image.
 
 The Base image generally contains the basic dependencies like `wget`, plus `texlive`.
 We split this out because it's a pretty heavy set of
@@ -58,6 +59,8 @@ The `sharelatex/sharelatex` image extends the base image and adds the actual Ove
 and services.
 
 Use `make build-base` and `make build-community` from `server-ce/` to build these images.
+Container orchestration (Compose files, runtime wiring, volumes, database and
+cache services) is managed in a separate deployment repository.
 
 We use the [Phusion base-image](https://github.com/phusion/baseimage-docker)
 (which is extended by our `base` image) to provide us with a VM-like container
